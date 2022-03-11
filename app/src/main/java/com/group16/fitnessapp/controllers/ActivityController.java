@@ -16,20 +16,12 @@ public class ActivityController extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        String TYPE = "TYPE";
-        String TIME_BEFORE_ACTIVITY = "TIME_BEFORE_ACTIVITY";
-        String TIME_AFTER_ACTIVITY = "TIME_AFTER_ACTIVITY";
-        String DURATION = "DURATION";
+        String statement = "CREATE TABLE IF NOT EXISTS ACTIVITIES (ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "TYPE TEXT, "
+                + "TIME_BEFORE_ACTIVITY TEXT, "
+                + "TIME_AFTER_ACTIVITY TEXT, "
+                 +"DURATION NUMERIC )";
 
-        String statement = "CREATE TABLE IF NOT EXISTS ACTIVITIES (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                TYPE + " TEXT, " +
-                TIME_BEFORE_ACTIVITY + " TEXT, " +
-                TIME_AFTER_ACTIVITY + " TEXT, " +
-                DURATION +" NUMERIC )";
-
-        sqLiteDatabase.execSQL(statement);
-
-        statement = "CREATE TABLE IF NOT EXISTS SCORES (ID INTEGER PRIMARY KEY AUTOINCREMENT, GAME TEXT, SCORE DOUBLE, DATE REAL)";
 
         sqLiteDatabase.execSQL(statement);
     }

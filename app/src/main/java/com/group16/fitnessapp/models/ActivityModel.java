@@ -12,32 +12,45 @@ import java.time.LocalDateTime;
 public class ActivityModel {
 
     private final STATE TYPE;
-    private final LocalDateTime BEFORE_ACTIVITY;
-    private final LocalDateTime AFTER_ACTIVITY;
-    private final Long DURATION;
+    private LocalDateTime timeBeforeActivity;
+    private LocalDateTime timeAfterActivity;
+    private Long duration;
+
+    public ActivityModel(STATE state) {
+        this.TYPE = state;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
-    public ActivityModel(STATE TYPE, LocalDateTime BEFORE_ACTIVITY, LocalDateTime AFTER_ACTIVITY) {
+    public ActivityModel(STATE TYPE, LocalDateTime BEFORE_ACTIVITY) {
         this.TYPE = TYPE;
-        this.BEFORE_ACTIVITY = BEFORE_ACTIVITY;
-        this.AFTER_ACTIVITY = AFTER_ACTIVITY;
-        //noinspection Since15
-        this.DURATION = Duration.between(this.BEFORE_ACTIVITY, this.AFTER_ACTIVITY).toSeconds();
+        this.timeBeforeActivity = BEFORE_ACTIVITY;
     }
 
     public STATE getTYPE() {
         return TYPE;
     }
 
-    public LocalDateTime getBEFORE_ACTIVITY() {
-        return BEFORE_ACTIVITY;
+    public LocalDateTime getTimeBeforeActivity() {
+        return timeBeforeActivity;
     }
 
-    public LocalDateTime getAFTER_ACTIVITY() {
-        return AFTER_ACTIVITY;
+    public LocalDateTime getTimeAfterActivity() {
+        return timeAfterActivity;
     }
 
     public Long getDURATION() {
-        return DURATION;
+        return duration;
+    }
+
+    public void setTimeAfterActivity(LocalDateTime AFTER_ACTIVITY) {
+        this.timeAfterActivity = AFTER_ACTIVITY;
+        this.setDuration();
+    }
+
+    private void setDuration() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            //noinspection Since15
+            this.duration = Duration.between(this.timeBeforeActivity, this.timeAfterActivity).toSeconds();
+        }
     }
 }
