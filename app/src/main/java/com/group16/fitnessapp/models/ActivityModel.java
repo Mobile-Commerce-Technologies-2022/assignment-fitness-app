@@ -38,7 +38,7 @@ public class ActivityModel {
         return timeAfterActivity;
     }
 
-    public Long getDURATION() {
+    public Long getDuration() {
         return duration;
     }
 
