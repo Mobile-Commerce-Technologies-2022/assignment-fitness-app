@@ -34,14 +34,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-//            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-//        }
-
         STATE state = STATE.RUNNING;
         Fragment f = ff.getFragment(state);
         FragManager.getInstance().addFragment(this, f, state);
-//        FragManager.getInstance().removeFragment(this, f, state);
 
+        new android.os.Handler().postDelayed(
+                () -> {
+                    Log.i("tag","A Kiss after 5 seconds");
+                    FragManager.getInstance().removeFragment(MainActivity.this, f, state);
+
+                    Fragment f1 = ff.getFragment(STATE.REST);
+                    FragManager.getInstance().addFragment(MainActivity.this, f1, STATE.REST);
+                }, 5000);
     }
 }
