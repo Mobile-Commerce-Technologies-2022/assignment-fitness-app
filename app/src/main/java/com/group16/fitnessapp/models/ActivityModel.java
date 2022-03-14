@@ -1,5 +1,6 @@
 package com.group16.fitnessapp.models;
 
+import android.location.Location;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -15,9 +16,14 @@ public class ActivityModel {
     private LocalDateTime timeBeforeActivity;
     private LocalDateTime timeAfterActivity;
     private Long duration;
+    private Location initialLocation;
 
     public ActivityModel(STATE state) {
         this.TYPE = state;
+    }
+
+    public Location getInitialLocation() {
+        return initialLocation;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -26,6 +32,11 @@ public class ActivityModel {
         this.timeBeforeActivity = BEFORE_ACTIVITY;
     }
 
+    public ActivityModel(STATE TYPE, LocalDateTime BEFORE_ACTIVITY, Location initialLoc) {
+        this.TYPE = TYPE;
+        this.timeBeforeActivity = BEFORE_ACTIVITY;
+        this.initialLocation = initialLoc;
+    }
     public STATE getTYPE() {
         return TYPE;
     }

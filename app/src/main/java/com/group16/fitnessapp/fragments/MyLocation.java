@@ -7,12 +7,15 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 public class MyLocation implements Serializable {
-    private final Double longitude;
-    private final Double latitude;
-
+    private Double longitude;
+    private Double latitude;
+    private Location loc;
     public MyLocation(Location location) {
-        this.latitude = location.getLatitude();
-        this.longitude = location.getLongitude();
+        if(location != null) {
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
+            this.loc = location;
+        }
     }
 
     public Double getLongitude() {
@@ -29,6 +32,10 @@ public class MyLocation implements Serializable {
         return "MyLocation{" +
                 "longitude=" + longitude +
                 ", latitude=" + latitude +
-                '}';
+                ", speed=" + loc.getSpeed();
+    }
+
+    public Location getLocation() {
+        return loc;
     }
 }

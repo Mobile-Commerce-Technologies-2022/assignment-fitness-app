@@ -1,7 +1,7 @@
 package com.group16.fitnessapp.utils;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -19,7 +19,6 @@ public class FragManager {
         INSTANCE;
 
         private final FragManager instance;
-
 
         Singleton() {
             instance = new FragManager();
@@ -39,9 +38,9 @@ public class FragManager {
 
         Fragment temp_f = this.manager.findFragmentByTag(String.valueOf(state));
         if(temp_f != null) {
-            Toast.makeText(context, "removing:" + temp_f.getTag(), Toast.LENGTH_SHORT).show();
-            manager.beginTransaction().remove(f).commitNow();
+            this.manager.beginTransaction().remove(f).commitNow();
             this.manager.popBackStackImmediate();
+            Log.i("FragManager", "Removing " + state);
         }
     }
 
@@ -51,7 +50,7 @@ public class FragManager {
         Fragment temp_f = this.manager.findFragmentByTag(String.valueOf(state));
         if(temp_f == null) {
             manager.beginTransaction().add(R.id.fl_component, f, String.valueOf(state)).commitNow();
-            Toast.makeText(context, "adding:" + String.valueOf(state), Toast.LENGTH_SHORT).show();
+            Log.i("FragManager", "Adding " + state);
         }
     }
 }

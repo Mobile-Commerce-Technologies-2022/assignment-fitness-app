@@ -2,13 +2,19 @@ package com.group16.fitnessapp.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -32,17 +38,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final int MIN_DISTANCE_M = 5;
     private final FragFactory ff = new FragFactory();
     private LocationManager locationManager = null;
+    private STATE state = STATE.REST; // default resting
+    private Fragment fragment;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // check location permission
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
+//         check location permission
+        requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
         loadLocationTracker();
+        fragment = ff.getFragment(this.state, null); //initialize greeting fragment
     }
 
     @SuppressLint("MissingPermission")
@@ -50,19 +57,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onStart() {
         super.onStart();
 
-        STATE state = STATE.WALKING;
-        Fragment f = ff.getFragment(state);
-        FragManager.getInstance().addFragment(this, f, state);
-
-        Location lastKnownLocation = this.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        sendMessage(lastKnownLocation);
+        FragManager.getInstance().addFragment(this, fragment, this.state);
     }
-
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
         this.sendMessage(location);
         // STATE Controller
+        STATE prevState = this.state;
+        float speed = location.getSpeed();
+        if(speed > 0f && speed <= 4f) { // WALKING
+            this.state = STATE.WALKING;
+        } else if(speed >= 4f && speed <= 9f) { // RUNNING
+            this.state = STATE.RUNNING;
+        } else if(speed > 9f) { // IN_VAN
+            this.state = STATE.IN_VAN;
+        } else { //REST
+            this.state = STATE.REST;
+        }
+        Log.e(TAG, String.format("Current STATE: %s, speed: %f", this.state, speed));
+        if(this.state != prevState) {
+            FragManager.getInstance().removeFragment(this, this.fragment, prevState);
+            this.fragment = ff.getFragment(this.state, location);
+            FragManager.getInstance().addFragment(this, this.fragment, this.state);
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -76,21 +94,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void sendMessage(Location location) {
-        Log.d(TAG, "Broadcasting Message");
+        Log.e(TAG, "Broadcasting Message");
         Intent intent = new Intent("update-user-location");
         // You can also include some extra data.
-        intent.putExtra("my-location", new MyLocation(location));
+        intent.putExtra("my-location",  new MyLocation(location));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    private boolean checkPermissions() {
+    private boolean checkPermissions(String permission) {
         return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+                permission);
     }
 
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_PERMISSIONS_REQUEST_CODE);
+    private void requestPermissions(String permission) {
+        if(!checkPermissions(permission)) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{permission},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
     }
 }
