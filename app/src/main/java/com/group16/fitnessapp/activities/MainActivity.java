@@ -2,19 +2,13 @@ package com.group16.fitnessapp.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -30,69 +24,103 @@ import com.group16.fitnessapp.fragments.MyLocation;
 import com.group16.fitnessapp.utils.FragFactory;
 import com.group16.fitnessapp.utils.FragManager;
 
-
+@SuppressLint("MissingPermission")
 public class MainActivity extends AppCompatActivity implements LocationListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 16;
-    private final int TIME_INTERVAL = 1000;
-    private final int MIN_DISTANCE_M = 5;
+    private final int TIME_INTERVAL = 2500;
+    private final int MIN_DISTANCE_M = 0;
     private final FragFactory ff = new FragFactory();
-    private LocationManager locationManager = null;
+    private LocationManager locationManager;
     private STATE state = STATE.REST; // default resting
     private Fragment fragment;
-
+    private Location currentLocation;
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//         check location permission
+        // check location permission
         requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION);
         loadLocationTracker();
         fragment = ff.getFragment(this.state, null); //initialize greeting fragment
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     protected void onStart() {
         super.onStart();
-
-        FragManager.getInstance().addFragment(this, fragment, this.state);
+        FragManager.getInstance().addFragment(this, fragment, this.state); // initialize greeting fragment
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    /**
+     * control Fragment Activities based on speed. replace current fragment if state has changed
+     * @param location current location
+     */
+    @Override
     public void onLocationChanged(@NonNull Location location) {
-        this.sendMessage(location);
-        // STATE Controller
         STATE prevState = this.state;
-        float speed = location.getSpeed();
-        if(speed > 0f && speed <= 4f) { // WALKING
-            this.state = STATE.WALKING;
-        } else if(speed >= 4f && speed <= 9f) { // RUNNING
-            this.state = STATE.RUNNING;
-        } else if(speed > 9f) { // IN_VAN
-            this.state = STATE.IN_VAN;
-        } else { //REST
-            this.state = STATE.REST;
+        Location prevLocation = this.currentLocation;
+        if(this.currentLocation != null) {
+            if(isEqual(this.currentLocation, location)) {
+                this.state = STATE.REST;
+            } else{
+                float speed = location.getSpeed();
+                if(speed > 0f && speed <= 4f) { // WALKING
+                    this.state = STATE.WALKING;
+                } else if(speed >= 4f && speed <= 9f) { // RUNNING
+                    this.state = STATE.RUNNING;
+                } else if(speed > 9f) { // IN_VAN
+                    this.state = STATE.IN_VAN;
+                }
+            }
         }
-        Log.e(TAG, String.format("Current STATE: %s, speed: %f", this.state, speed));
+
+        this.currentLocation = location; // update current location
+        if(this.state == STATE.WALKING || this.state == STATE.IN_VAN) { // cast current location to update map
+            this.sendMessage(location);
+        }
+
+        if(this.currentLocation != null && prevLocation != null) {
+            Log.d(TAG, String.format(" [%s, %s] [%f, %f] [%s]",
+                    prevState,
+                    this.state,
+                    Math.abs(this.currentLocation.getLatitude() - prevLocation.getLatitude()),
+                    Math.abs(this.currentLocation.getLongitude() - prevLocation.getLongitude()),
+                    isEqual(this.currentLocation, prevLocation)));
+        }
+
         if(this.state != prevState) {
             FragManager.getInstance().removeFragment(this, this.fragment, prevState);
             this.fragment = ff.getFragment(this.state, location);
             FragManager.getInstance().addFragment(this, this.fragment, this.state);
         }
     }
-
-    @SuppressLint("MissingPermission")
+    /**
+     * Initialize Location Manager
+     */
     public void loadLocationTracker() {
         try {
             this.locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, this.TIME_INTERVAL ,this.MIN_DISTANCE_M, MainActivity.this);
+            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_INTERVAL, MIN_DISTANCE_M, MainActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Pub/Sub to Map Fragment to update real-time location
+     * @param location current location
+     */
     private void sendMessage(Location location) {
         Log.e(TAG, "Broadcasting Message");
         Intent intent = new Intent("update-user-location");
@@ -112,5 +140,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     new String[]{permission},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    private boolean isEqual(Location l1, Location l2) {
+        return l1 != null && l2 != null &&
+                Math.abs(l1.getLatitude() - l2.getLatitude()) == 0 &&
+                Math.abs(l1.getLongitude() - l2.getLongitude()) == 0;
     }
 }
