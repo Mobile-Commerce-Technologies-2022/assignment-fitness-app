@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FitnessApp</string>
+    <string name="image_resting">image resting</string>
+    <string name="resting">RESTING</string>
+    <string name="image_walking_in_van">image walking/ in_van</string>
+    <string name="walking">WALKING</string>
+    <string name="avicii">Avicii</string>
+    <string name="running">RUNNING</string>
 </resources>

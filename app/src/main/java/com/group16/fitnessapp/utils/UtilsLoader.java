@@ -1,11 +1,5 @@
 package com.group16.fitnessapp.utils;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
 public class UtilsLoader {
     private UtilsLoader(){}
 

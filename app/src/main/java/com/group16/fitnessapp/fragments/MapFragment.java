@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -71,7 +70,7 @@ public class MapFragment extends ActivityFragment {
         TextView tv = view.findViewById(R.id.tv_map);
         tv.setText(String.valueOf(activityModel.getState()));
         ImageView iv = view.findViewById(R.id.iv_map);
-        Drawable drawable = getActivity().getDrawable((activityModel.getState() == STATE.WALKING) ? R.drawable.walk : R.drawable.in_van);
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = requireActivity().getDrawable((activityModel.getState() == STATE.WALKING) ? R.drawable.walk : R.drawable.in_van);
         iv.setImageDrawable(drawable);
 
         SupportMapFragment mapFragment =
