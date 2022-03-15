@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 
 public class ActivityModel {
 
-    private final STATE TYPE;
+    private final STATE state;
     private LocalDateTime timeBeforeActivity;
     private LocalDateTime timeAfterActivity;
     private Long duration;
     private Location initialLocation;
 
     public ActivityModel(STATE state) {
-        this.TYPE = state;
+        this.state = state;
     }
 
     public Location getInitialLocation() {
@@ -27,18 +27,18 @@ public class ActivityModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
-    public ActivityModel(STATE TYPE, LocalDateTime BEFORE_ACTIVITY) {
-        this.TYPE = TYPE;
+    public ActivityModel(STATE state, LocalDateTime BEFORE_ACTIVITY) {
+        this.state = state;
         this.timeBeforeActivity = BEFORE_ACTIVITY;
     }
 
-    public ActivityModel(STATE TYPE, LocalDateTime BEFORE_ACTIVITY, Location initialLoc) {
-        this.TYPE = TYPE;
+    public ActivityModel(STATE state, LocalDateTime BEFORE_ACTIVITY, Location initialLoc) {
+        this.state = state;
         this.timeBeforeActivity = BEFORE_ACTIVITY;
         this.initialLocation = initialLoc;
     }
-    public STATE getTYPE() {
-        return TYPE;
+    public STATE getState() {
+        return state;
     }
 
     public LocalDateTime getTimeBeforeActivity() {

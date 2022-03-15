@@ -40,7 +40,7 @@ public abstract class ActivityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(this.activityModel != null && this.activityModel.getTYPE() != STATE.REST) {
+        if(this.activityModel != null && this.activityModel.getState() != STATE.REST) {
             DatabaseLoader loader = new DatabaseLoader(getActivity());
             loader.addActivityRecord(this.activityModel);
             Log.i("ActivityFragment", "Logged activity starting time");
@@ -50,9 +50,9 @@ public abstract class ActivityFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(this.activityModel != null && this.activityModel.getTYPE() != STATE.REST) {
+        if(this.activityModel != null && this.activityModel.getState() != STATE.REST) {
             this.activityModel.setTimeAfterActivity(LocalDateTime.now());
-            String str = "You have just " + this.activityModel.getTYPE()
+            String str = "You have just " + this.activityModel.getState()
                     + " for " + UtilsLoader.getInstance().secondToHHMMSS(this.activityModel.getDuration());
             Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
         }
