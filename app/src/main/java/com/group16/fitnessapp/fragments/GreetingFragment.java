@@ -3,26 +3,30 @@ package com.group16.fitnessapp.fragments;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 
 import com.group16.fitnessapp.R;
-import com.group16.fitnessapp.constants.STATE;
+import com.group16.fitnessapp.models.ActivityModel;
 
 import java.util.Date;
 import java.util.Locale;
 
-public class GreetingFragment extends Fragment {
+public class GreetingFragment extends ActivityFragment {
+
+    public GreetingFragment(ActivityModel activityModel) {
+        super(activityModel);
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.frag_greeting, parent, false);
     }
@@ -31,7 +35,7 @@ public class GreetingFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
         TextClock clock = view.findViewById(R.id.tc_clock);
@@ -39,7 +43,7 @@ public class GreetingFragment extends Fragment {
 
         date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
         clock.refreshTime();
-        Toast.makeText(getActivity(),"Processing user activity", Toast.LENGTH_SHORT).show();
+        Log.i("Greeting/Rest", "Processing user activity");
     }
 
     @Override

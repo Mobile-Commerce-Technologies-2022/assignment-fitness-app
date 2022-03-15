@@ -40,8 +40,8 @@ public class DatabaseLoader extends SQLiteOpenHelper {
 
         contentValues.put("TYPE", String.valueOf(activityModel.getTYPE()));
         contentValues.put("TIME_BEFORE_ACTIVITY", String.valueOf(activityModel.getTimeBeforeActivity()));
-        contentValues.put("TIME_AFTER_ACTIVITY", String.valueOf(activityModel.getTimeAfterActivity()));
-        contentValues.put("DURATION", activityModel.getDuration());
+//        contentValues.put("TIME_AFTER_ACTIVITY", String.valueOf(activityModel.getTimeAfterActivity()));
+//        contentValues.put("DURATION", activityModel.getDuration());
 
         long activities_table = database.insert("ACTIVITIES", null, contentValues);
 
