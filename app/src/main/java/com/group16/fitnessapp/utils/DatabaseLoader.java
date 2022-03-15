@@ -38,7 +38,7 @@ public class DatabaseLoader extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put("TYPE", String.valueOf(activityModel.getTYPE()));
+        contentValues.put("TYPE", String.valueOf(activityModel.getState()));
         contentValues.put("TIME_BEFORE_ACTIVITY", String.valueOf(activityModel.getTimeBeforeActivity()));
 //        contentValues.put("TIME_AFTER_ACTIVITY", String.valueOf(activityModel.getTimeAfterActivity()));
 //        contentValues.put("DURATION", activityModel.getDuration());

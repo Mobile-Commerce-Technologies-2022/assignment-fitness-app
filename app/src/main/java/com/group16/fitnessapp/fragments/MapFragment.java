@@ -5,15 +5,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.group16.fitnessapp.R;
+import com.group16.fitnessapp.constants.STATE;
 import com.group16.fitnessapp.models.ActivityModel;
 
 public class MapFragment extends ActivityFragment {
@@ -63,6 +68,12 @@ public class MapFragment extends ActivityFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        TextView tv = view.findViewById(R.id.tv_map);
+        tv.setText(String.valueOf(activityModel.getState()));
+        ImageView iv = view.findViewById(R.id.iv_map);
+        Drawable drawable = getActivity().getDrawable((activityModel.getState() == STATE.WALKING) ? R.drawable.walk : R.drawable.in_van);
+        iv.setImageDrawable(drawable);
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {

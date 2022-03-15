@@ -5,11 +5,28 @@
     android:layout_height="match_parent"
     android:background="@color/background" >
 
+    <ImageView
+        android:id="@+id/iv_rest"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:src="@drawable/rest"/>
+
+    <TextView
+        android:id="@+id/tv_rest"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:textSize="48sp"
+        android:textAlignment="center"
+        android:text="RESTING"
+        android:textColor="@color/white" />
     <TextClock
         android:id="@+id/tc_clock"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginTop="200dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:layout_marginTop="100dp"
         android:textAlignment="center"
         android:textSize="48sp"
         android:textColor="@color/white" />
@@ -17,7 +34,8 @@
     <TextView
         android:id="@+id/tv_date"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
         android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:textSize="48sp"
