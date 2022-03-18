@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private STATE state = STATE.REST; // default resting
     private Fragment fragment;
     private Location currentLocation;
+    private static final float SPEED_WALKING_THRESHOLD = 4f;
+    private static final float SPEED_RUNNING_THRESHOLD = 9f;
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onStart() {
         super.onStart();
-        FragManager.getInstance().addFragment(this, fragment, this.state); // initialize greeting fragment
+        // initialize greeting fragment
+        FragManager.getInstance().addFragment(this, fragment, this.state);
     }
 
     @Override
@@ -75,18 +78,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 this.state = STATE.REST;
             } else{
                 float speed = location.getSpeed();
-                if(speed > 0f && speed <= 4f) { // WALKING
+                if(speed > 0f && speed <= SPEED_WALKING_THRESHOLD) { // WALKING
                     this.state = STATE.WALKING;
-                } else if(speed >= 4f && speed <= 9f) { // RUNNING
+                } else if(speed >= SPEED_WALKING_THRESHOLD
+                        && speed <= SPEED_RUNNING_THRESHOLD) { // RUNNING
                     this.state = STATE.RUNNING;
-                } else if(speed > 9f) { // IN_VAN
+                } else if(speed > SPEED_RUNNING_THRESHOLD) { // IN_VAN
                     this.state = STATE.IN_VAN;
                 }
             }
         }
 
         this.currentLocation = location; // update current location
-        if(this.state == STATE.WALKING || this.state == STATE.IN_VAN) { // cast current location to update map
+        // cast current location to update map
+        if(this.state == STATE.WALKING || this.state == STATE.IN_VAN) {
             this.sendMessage(location);
         }
 
@@ -110,8 +115,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
      */
     public void loadLocationTracker() {
         try {
-            this.locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIME_INTERVAL, MIN_DISTANCE_M, MainActivity.this);
+            this.locationManager =
+                    (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    TIME_INTERVAL, MIN_DISTANCE_M, MainActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,8 +137,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private boolean checkPermissions(String permission) {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
-                permission);
+        return  PackageManager.PERMISSION_GRANTED ==
+                ActivityCompat.checkSelfPermission(this, permission);
     }
 
     private void requestPermissions(String permission) {

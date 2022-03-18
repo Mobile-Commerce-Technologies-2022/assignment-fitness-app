@@ -29,7 +29,9 @@ public abstract class ActivityFragment extends Fragment {
     }
 
     @Override
-    public abstract View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState);
+    public abstract View onCreateView(@NonNull LayoutInflater inflater,
+                                      ViewGroup parent,
+                                      Bundle savedInstanceState);
 
     // This event is triggered soon after onCreateView().
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
@@ -52,9 +54,12 @@ public abstract class ActivityFragment extends Fragment {
         super.onDestroy();
         if(this.activityModel != null && this.activityModel.getState() != STATE.REST) {
             this.activityModel.setTimeAfterActivity(LocalDateTime.now());
-            String str = "You have just " + this.activityModel.getState()
-                    + " for " + UtilsLoader.getInstance().secondToHHMMSS(this.activityModel.getDuration());
-            Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
+            String msg = String.format("You have just %s for %s",
+                    this.activityModel.getState(),
+                    UtilsLoader.getInstance().secondToHHMMSS(this.activityModel.getDuration()));
+//            String str = "You have just " + this.activityModel.getState()
+//                    + " for " + UtilsLoader.getInstance().secondToHHMMSS(this.activityModel.getDuration());
+            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
         }
     }
 }

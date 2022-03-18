@@ -61,16 +61,21 @@ public class MapFragment extends ActivityFragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup parent,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.frag_map, parent, false);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         TextView tv = view.findViewById(R.id.tv_map);
         tv.setText(String.valueOf(activityModel.getState()));
         ImageView iv = view.findViewById(R.id.iv_map);
-        @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = requireActivity().getDrawable((activityModel.getState() == STATE.WALKING) ? R.drawable.walk : R.drawable.in_van);
+         Drawable drawable = requireActivity()
+                 .getDrawable((activityModel.getState() == STATE.WALKING)
+                         ? R.drawable.walk : R.drawable.in_van);
         iv.setImageDrawable(drawable);
 
         SupportMapFragment mapFragment =
@@ -96,21 +101,24 @@ public class MapFragment extends ActivityFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(this.mMessageReceiver,
+        LocalBroadcastManager.getInstance(requireActivity())
+                .registerReceiver(this.mMessageReceiver,
                 new IntentFilter("update-user-location"));
         Log.e(TAG, "onCreate ready");
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(this.mMessageReceiver);
+        LocalBroadcastManager.getInstance(requireActivity())
+                .unregisterReceiver(this.mMessageReceiver);
         super.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(this.mMessageReceiver,
+        LocalBroadcastManager.getInstance(requireActivity())
+                .registerReceiver(this.mMessageReceiver,
                 new IntentFilter("update-user-location"));
     }
 

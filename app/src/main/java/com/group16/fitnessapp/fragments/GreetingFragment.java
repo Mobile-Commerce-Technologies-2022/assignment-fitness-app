@@ -26,7 +26,9 @@ public class GreetingFragment extends ActivityFragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup parent,
+                             Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.frag_greeting, parent, false);
     }
