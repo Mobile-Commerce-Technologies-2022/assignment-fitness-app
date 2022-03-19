@@ -73,7 +73,7 @@ public class MapFragment extends ActivityFragment {
         TextView tv = view.findViewById(R.id.tv_map);
         tv.setText(String.valueOf(activityModel.getState()));
         ImageView iv = view.findViewById(R.id.iv_map);
-         Drawable drawable = requireActivity()
+        Drawable drawable = requireActivity()
                  .getDrawable((activityModel.getState() == STATE.WALKING)
                          ? R.drawable.walk : R.drawable.in_van);
         iv.setImageDrawable(drawable);
